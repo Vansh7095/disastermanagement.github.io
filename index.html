@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DisasterShield AI Dashboard</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    background: #00695c;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #a7ffeb;
+  }
+  main {
+    max-width: 600px;
+    margin: 30px 20px;
+    padding: 20px;
+    background: #212121;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #00695c;
+    width: 90%;
+  }
+  .sensor {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+  }
+  .alert-status {
+    padding: 15px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .safe { background: #388e3c; color: #c8e6c9; }
+  .warning { background: #fbc02d; color: #fffde7; }
+  .danger { background: #d32f2f; color: #ffcdd2; }
+
+  button {
+    background: #00695c;
+    color: #a7ffeb;
+    border: none;
+    padding: 10px 18px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  button:hover {
+    background: #004d40;
+  }
+
+  footer {
+    margin-top: auto;
+    background: #00695c;
+    color: #a7ffeb;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 500px) {
+    main {
+      font-size: 1rem;
+      padding: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>DisasterShield AI Dashboard</header>
+<main>
+  <div class="sensor">Water Level: <span id="waterLevel">--</span></div>
+  <div class="sensor">Vibration: <span id="vibration">--</span></div>
+  <div class="sensor">Flame: <span id="flame">--</span></div>
+  <div class="sensor">Temperature: <span id="temperature">--</span> °C</div>
+
+  <div id="alertStatus" class="alert-status safe">Status: SAFE</div>
+
+  <button id="ackBtn">Acknowledge Alert / Reset</button>
+</main>
+
+<footer>© 2025 DisasterShield AI by Vansh Sharma</footer>
+
+<script>
+  const waterEl = document.getElementById('waterLevel');
+  const vibrationEl = document.getElementById('vibration');
+  const flameEl = document.getElementById('flame');
+  const tempEl = document.getElementById('temperature');
+  const alertEl = document.getElementById('alertStatus');
+  const ackBtn = document.getElementById('ackBtn');
+
+  let alertActive = false;
+  const apiUrl = 'data.json'; // Change to your ESP32 endpoint later
+
+  async function fetchData() {
+    try {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+
+      waterEl.textContent = data.waterLevel;
+      vibrationEl.textContent = data.vibration;
+      flameEl.textContent = data.flame;
+      tempEl.textContent = data.temperature.toFixed(1);
+
+      let status = data.alertStatus.toUpperCase();
+      alertEl.textContent = `Status: ${status}`;
+      alertEl.classList.remove('safe', 'warning', 'danger');
+
+      if (status === 'SAFE') {
+        alertEl.classList.add('safe');
+        alertActive = false;
+      } else if (status === 'FLOOD' || status === 'EARTHQUAKE' || status === 'WARNING') {
+        alertEl.classList.add('warning');
+        alertActive = true;
+      } else if (status === 'FIRE' || status === 'DANGER') {
+        alertEl.classList.add('danger');
+        alertActive = true;
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  }
+
+  ackBtn.addEventListener('click', () => {
+    if (alertActive) {
+      alert('Alert acknowledged. Resetting alarms.');
+      alertActive = false;
+      alertEl.textContent = 'Status: SAFE';
+      alertEl.classList.remove('warning', 'danger');
+      alertEl.classList.add('safe');
+    } else {
+      alert('No active alerts.');
+    }
+  });
+
+  setInterval(fetchData, 3000);
+  fetchData();
+</script>
+</body>
+</html>
