@@ -1,87 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact - DisasterShield AI</title>
+  <meta charset="UTF-8">
+  <title>Contact | DisasterShield AI</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #111;
-      color: #eee;
-      margin: 0;
-      padding: 0;
+      background: #101820;
+      font-family: Arial, sans-serif;
+      color: white;
+      padding: 40px;
     }
-    header, footer {
-      background: #00695c;
-      color: #a7ffeb;
-      text-align: center;
-      padding: 15px 0;
-    }
-    main {
-      padding: 30px;
-      max-width: 600px;
+    h1 { color: #00d4ff; }
+    form {
+      max-width: 500px;
       margin: auto;
+      background: #1b262c;
+      padding: 20px;
+      border-radius: 10px;
     }
     input, textarea {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       margin: 10px 0;
-      border-radius: 5px;
       border: none;
+      border-radius: 5px;
     }
-    textarea { resize: vertical; }
     button {
-      background-color: #00796b;
-      color: #fff;
+      background-color: #00d4ff;
+      color: black;
       padding: 10px 20px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #004d40;
-    }
-    nav {
-      background: #004d40;
-      padding: 10px;
-      text-align: center;
-    }
-    nav a {
-      color: #a7ffeb;
-      margin: 0 15px;
+      border-radius: 5px;
       font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: underline;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-<header>
   <h1>Contact Us</h1>
-</header>
-<nav>
-  <a href="index.html">Home</a>
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
-</nav>
-<main>
-  <form action="https://formspree.io/f/mnqegnpk" method="POST">
-    <label>Your Name:</label>
-    <input type="text" name="name" required />
-
-    <label>Your Email:</label>
-    <input type="email" name="email" required />
-
-    <label>Your Message:</label>
-    <textarea name="message" rows="5" required></textarea>
-
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Your Name" required />
+    <input type="email" id="email" placeholder="Your Email" required />
+    <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
     <button type="submit">Send Message</button>
+    <p id="status" style="color: #00ff88;"></p>
   </form>
-</main>
-<footer>
-  © 2025 DisasterShield AI by Vansh Sharma
-</footer>
+
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9zicdGgh4fb0-3s3Am_YrQpJzxvDDVEY",
+      authDomain: "disaster-shield-46d96.firebaseapp.com",
+      projectId: "disaster-shield-46d96",
+      storageBucket: "disaster-shield-46d96.appspot.com",
+      messagingSenderId: "680999611757",
+      appId: "1:680999611757:web:13b79df5e665194fabfe64",
+      measurementId: "G-R3Z8C906C5"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Handle Form Submit
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      try {
+        await db.collection('contacts').add({
+          name,
+          email,
+          message,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('status').textContent = '✅ Message sent successfully!';
+        form.reset();
+      } catch (error) {
+        console.error("Error adding message:", error);
+        document.getElementById('status').textContent = '❌ Failed to send. Try again.';
+      }
+    });
+  </script>
 </body>
 </html>
