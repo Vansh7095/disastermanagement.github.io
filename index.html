@@ -53,17 +53,58 @@
       color: #00d4ff;
     }
   </style>
+
+  <!-- ✅ Firebase SDKs -->
+  <script type="module">
+    // Import the functions you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9zicdGgh4fb0-3s3Am_YrQpJzxvDDVEY",
+      authDomain: "disaster-shield-46d96.firebaseapp.com",
+      projectId: "disaster-shield-46d96",
+      storageBucket: "disaster-shield-46d96.appspot.com",
+      messagingSenderId: "680999611757",
+      appId: "1:680999611757:web:13b79df5e665194fabfe64",
+      measurementId: "G-R3Z8C906C5"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ✅ Listen to document changes in real-time
+    const docRef = doc(db, "sensors", "liveData"); // Example path
+
+    onSnapshot(docRef, (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        document.getElementById('temp').textContent = data.temperature ?? '--';
+        document.getElementById('humidity').textContent = data.humidity ?? '--';
+        document.getElementById('gas').textContent = data.gas ?? '--';
+        document.getElementById('flood').textContent = data.flood ?? '--';
+        document.getElementById('fire').textContent = data.fire ?? '--';
+      } else {
+        console.log("No such document!");
+      }
+    });
+  </script>
 </head>
+
 <body>
   <header>
     <h1>DisasterShield AI</h1>
     <p>AI-powered Smart Disaster Management System</p>
   </header>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
   </nav>
+
   <main>
     <h2>Live Sensor Readings</h2>
     <div class="sensor-card">Temperature: <span id="temp">--</span> °C</div>
@@ -72,21 +113,9 @@
     <div class="sensor-card">Flood Sensor: <span id="flood">--</span></div>
     <div class="sensor-card">Fire Alert: <span id="fire">--</span></div>
   </main>
+
   <footer>
     &copy; 2025 DisasterShield AI | Developed by Vansh Sharma
   </footer>
-  <script>
-    async function loadData() {
-      const res = await fetch('data.json');
-      const data = await res.json();
-      document.getElementById('temp').textContent = data.temperature || '--';
-      document.getElementById('humidity').textContent = data.humidity || '--';
-      document.getElementById('gas').textContent = data.gas || '--';
-      document.getElementById('flood').textContent = data.flood || '--';
-      document.getElementById('fire').textContent = data.fire || '--';
-    }
-    setInterval(loadData, 2000);
-    loadData();
-  </script>
 </body>
 </html>
