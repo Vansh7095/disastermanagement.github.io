@@ -87,8 +87,13 @@ Want to help improve this project?
 
 ### 📜 License
 
-MIT License – Free to use, modify, and share. Just give credit.
+Custom Proprietary License: 
+
+1. Copyright © 2025 Vansh Sharma
+2. All rights reserved.
+3. This website and all its contents including source code, design, and concept are the exclusive intellectual property of Vansh Sharma.
+4. No part of this project may be copied, modified, distributed, or used for any purpose without prior written permission from the copyright holder.
+5. This project is for educational demonstration only and may not be used for commercial or public purposes without approval.
 
 ---
 
-Let me know if you want this in the ZIP file too or directly pushed into your GitHub repo's README.md.
