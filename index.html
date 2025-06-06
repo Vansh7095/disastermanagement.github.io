@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DisasterShield AI - Home</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #101820;
+      color: #f1f1f1;
+    }
+    header, footer {
+      background: #0f4c75;
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #3282b8;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    nav a:hover {
+      background: #bbe1fa;
+      color: #000;
+      border-radius: 5px;
+    }
+    main {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .sensor-card {
+      background: #1b262c;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
+    .sensor-card:hover {
+      transform: scale(1.02);
+    }
+    h2 {
+      color: #00d4ff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DisasterShield AI</h1>
+    <p>AI-powered Smart Disaster Management System</p>
+  </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <main>
+    <h2>Live Sensor Readings</h2>
+    <div class="sensor-card">Temperature: <span id="temp">--</span> °C</div>
+    <div class="sensor-card">Humidity: <span id="humidity">--</span> %</div>
+    <div class="sensor-card">Gas Level: <span id="gas">--</span> ppm</div>
+    <div class="sensor-card">Flood Sensor: <span id="flood">--</span></div>
+    <div class="sensor-card">Fire Alert: <span id="fire">--</span></div>
+  </main>
+  <footer>
+    &copy; 2025 DisasterShield AI | Developed by Vansh Sharma
+  </footer>
+  <script>
+    async function loadData() {
+      const res = await fetch('data.json');
+      const data = await res.json();
+      document.getElementById('temp').textContent = data.temperature || '--';
+      document.getElementById('humidity').textContent = data.humidity || '--';
+      document.getElementById('gas').textContent = data.gas || '--';
+      document.getElementById('flood').textContent = data.flood || '--';
+      document.getElementById('fire').textContent = data.fire || '--';
+    }
+    setInterval(loadData, 2000);
+    loadData();
+  </script>
+</body>
+</html>
